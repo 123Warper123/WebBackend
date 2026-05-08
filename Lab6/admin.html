@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Административная панель</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Панель администратора</h1>
+
+        <?php if ($message): ?>
+        <div class="message"><?= htmlspecialchars($message) ?></div>
+        <?php endif; ?>
+
+        <div class="stats-section">
+            <h2>Общая статистика</h2>
+            <div class="stats-grid">
+                <div class="stat-card total-card">
+                    <h3>Всего заявок</h3>
+                    <div class="stat-number"><?= $total_submissions ?></div>
+                </div>
+                <div class="stat-card">
+                    <h3>Приняли соглашение</h3>
+                    <div class="stat-number"><?= $accepted_contract ?></div>
+                </div>
+                <?php foreach ($gender_data as $gender => $count): ?>
+                <div class="stat-card">
+                    <h3><?= htmlspecialchars($gender) ?></h3>
+                    <div class="stat-number"><?= $count ?></div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+
+        <div class="stats-section">
+            <h2>Статистика по языкам программирования</h2>
+            <div class="stats-grid">
+                <?php foreach ($language_stats as $lang): ?>
+                <div class="stat-card lang-card">
+                    <h3><?= htmlspecialchars($lang['name']) ?></h3>
+                    <div class="stat-number"><?= $lang['count'] ?></div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+
+        <div class="users-section">
+            <h2>Заявки пользователей</h2>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>ФИО</th>
+                            <th>Телефон</th>
+                            <th>Email</th>
+                            <th>Пол</th>
+                            <th>Языки</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($submissions as $sub): ?>
+                        <tr data-id="<?= $sub['id'] ?>"
+                            data-name="<?= htmlspecialchars($sub['full_name']) ?>"
+                            data-phone="<?= htmlspecialchars($sub['phone']) ?>"
+                            data-email="<?= htmlspecialchars($sub['email']) ?>"
+                            data-birth="<?= htmlspecialchars($sub['birth_date']) ?>"
+                            data-gender="<?= htmlspecialchars($sub['gender'] ?? '') ?>"
+                            data-about="<?= htmlspecialchars($sub['about_self'] ?? '') ?>"
+                            data-contract="<?= $sub['contract_accepted'] ?>"
+                            data-langs="<?= isset($submission_langs[$sub['id']]) ? implode(',', $submission_langs[$sub['id']]) : '' ?>">
+                            <td><?= $sub['id'] ?></td>
+                            <td><?= htmlspecialchars($sub['full_name']) ?></td>
+                            <td><?= htmlspecialchars($sub['phone']) ?></td>
+                            <td><?= htmlspecialchars($sub['email']) ?></td>
+                            <td><?= htmlspecialchars($sub['gender'] ?? '-') ?></td>
+                            <td><?= htmlspecialchars($sub['favorite_langs']) ?></td>
+                            <td class="actions">
+                                <button onclick="editSubmission(this)" class="btn btn-edit">Ред.</button>
+                                <form method="POST" onsubmit="return confirm('Удалить заявку?')" class="inline-form">
+                                    <input type="hidden" name="action" value="delete">
+                                    <input type="hidden" name="submission_id" value="<?= $sub['id'] ?>">
+                                    <button type="submit" class="btn btn-delete">Уд.</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="editModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <h2>Редактировать заявку</h2>
+                <form id="editForm" method="POST">
+                    <input type="hidden" name="action" value="update">
+                    <input type="hidden" name="submission_id" id="editId">
+
+                    <div class="form-group">
+                        <label>ФИО:</label>
+                        <input type="text" name="full_name" id="editName" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Телефон:</label>
+                        <input type="text" name="phone" id="editPhone" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email:</label>
+                        <input type="email" name="email" id="editEmail" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Дата рождения:</label>
+                        <input type="date" name="birth_date" id="editBirthDate" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Пол:</label>
+                        <select name="gender" id="editGender">
+                            <option value="">Не указан</option>
+                            <option value="Мужчина">Мужчина</option>
+                            <option value="Женщина">Женщина</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>О себе:</label>
+                        <textarea name="about_self" id="editAbout" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Любимые языки:</label>
+                        <div class="languages-checkboxes">
+                            <?php foreach ($all_languages as $lang): ?>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="languages[]" value="<?= $lang['id'] ?>" class="lang-checkbox">
+                                <?= htmlspecialchars($lang['name']) ?>
+                            </label>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="contract_accepted" id="editContract">
+                            Принято соглашение
+                        </label>
+                    </div>
+
+                    <div class="modal-buttons">
+                        <button type="submit" class="btn btn-save">Сохранить</button>
+                        <button type="button" onclick="closeModal()" class="btn btn-cancel">Отмена</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function editSubmission(button) {
+            var row = button.closest('tr');
+
+            document.getElementById('editId').value = row.getAttribute('data-id');
+            document.getElementById('editName').value = row.getAttribute('data-name');
+            document.getElementById('editPhone').value = row.getAttribute('data-phone');
+            document.getElementById('editEmail').value = row.getAttribute('data-email');
+            document.getElementById('editBirthDate').value = row.getAttribute('data-birth');
+            document.getElementById('editGender').value = row.getAttribute('data-gender');
+            document.getElementById('editAbout').value = row.getAttribute('data-about');
+            document.getElementById('editContract').checked = (row.getAttribute('data-contract') == '1');
+
+            var checkboxes = document.getElementsByClassName('lang-checkbox');
+            for (var i = 0; i < checkboxes.length; i++) {
+                checkboxes[i].checked = false;
+            }
+
+            var langs = row.getAttribute('data-langs');
+            if (langs) {
+                var langArray = langs.split(',');
+                for (var i = 0; i < langArray.length; i++) {
+                    var checkbox = document.querySelector('.lang-checkbox[value="' + langArray[i] + '"]');
+                    if (checkbox) checkbox.checked = true;
+                }
+            }
+
+            document.getElementById('editModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+
+        window.onclick = function (event) {
+            if (event.target == document.getElementById('editModal')) {
+                closeModal();
+            }
+        };
+    </script>
+</body>
+</html>

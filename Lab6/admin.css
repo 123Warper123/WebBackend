@@ -1,0 +1,289 @@
+/* admin.css */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f9;
+    color: #333;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 30px;
+    font-size: 2em;
+}
+
+h2 {
+    color: #34495e;
+    margin-bottom: 20px;
+}
+
+.message {
+    background: #27ae60;
+    color: white;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Статистика */
+.stats-section {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.stat-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+    .stat-card.total-card {
+        background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+    }
+
+    .stat-card.lang-card {
+        background: linear-gradient(135deg, #f39c12 0%, #e74c3c 100%);
+    }
+
+    .stat-card h3 {
+        font-size: 1.1em;
+        margin-bottom: 10px;
+    }
+
+.stat-number {
+    font-size: 2em;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.stat-percent {
+    font-size: 0.9em;
+    opacity: 0.9;
+}
+
+/* Таблица */
+.users-section {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9em;
+}
+
+th {
+    background: #34495e;
+    color: white;
+    padding: 12px 8px;
+    text-align: left;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+td {
+    padding: 10px 8px;
+    border-bottom: 1px solid #ecf0f1;
+}
+
+tr:hover {
+    background: #f8f9fa;
+}
+
+.actions {
+    display: flex;
+    gap: 5px;
+}
+
+.btn {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85em;
+    transition: opacity 0.3s;
+}
+
+    .btn:hover {
+        opacity: 0.8;
+    }
+
+.btn-edit {
+    background: #3498db;
+    color: white;
+}
+
+.btn-delete {
+    background: #e74c3c;
+    color: white;
+}
+
+.inline-form {
+    display: inline;
+}
+
+/* Модальное окно */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background: white;
+    margin: 30px auto;
+    padding: 30px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+.close {
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    font-size: 28px;
+    cursor: pointer;
+    color: #7f8c8d;
+}
+
+    .close:hover {
+        color: #2c3e50;
+    }
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: #2c3e50;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #bdc3c7;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+    .form-group textarea {
+        resize: vertical;
+    }
+
+.languages-checkboxes {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 8px;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: normal;
+    cursor: pointer;
+}
+
+    .checkbox-label input[type="checkbox"] {
+        width: auto;
+        margin: 0;
+    }
+
+.modal-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.btn-save {
+    background: #27ae60;
+    color: white;
+    padding: 10px 20px;
+}
+
+.btn-cancel {
+    background: #95a5a6;
+    color: white;
+    padding: 10px 20px;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 1.5em;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    th, td {
+        padding: 6px;
+        font-size: 0.8em;
+    }
+
+    .actions {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+        text-align: center;
+    }
+
+    .languages-checkboxes {
+        grid-template-columns: 1fr;
+    }
+}
